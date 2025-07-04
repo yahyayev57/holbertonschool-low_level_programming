@@ -1,17 +1,16 @@
 #include <stdio.h>
 
 /**
- * main - Prints the alphabet in lowercase except 'q' and 'e', followed by a new line
+ * main - prints digits from 0 to 9 followed by a new line
  *
  * Return: Always 0
  */
 int main(void)
 {
-    char ch;
+    char digit;
 
-    for (ch = 'a'; ch <= 'z'; ch++)
-        if (ch != 'e' && ch != 'q')
-            putchar(ch);
+    for (digit = '0'; digit <= '9'; digit++)
+        putchar(digit);
     putchar('\n');
 
     return (0);
