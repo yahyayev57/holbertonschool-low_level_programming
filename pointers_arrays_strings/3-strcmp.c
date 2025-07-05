@@ -5,7 +5,7 @@
  * @s1: First string
  * @s2: Second string
  *
- * Return: 
+ * Return:
  *   0 if s1 == s2
  *   < 0 if s1 < s2
  *   > 0 if s1 > s2
