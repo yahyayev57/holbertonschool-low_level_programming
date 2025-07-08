@@ -9,15 +9,15 @@
  * @age: age of the dog
  * @owner: owner of the dog
  */
-struct dog
+typedef struct dog
 {
 	char *name;
 	float age;
 	char *owner;
-};
+} dog_t;
 
 /* Function prototypes */
-void init_dog(struct dog *d, char *name, float age, char *owner);
-void print_dog(struct dog *d);
+void init_dog(dog_t *d, char *name, float age, char *owner);
+void print_dog(dog_t *d);
 
 #endif /* DOG_H */
