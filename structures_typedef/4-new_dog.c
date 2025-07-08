@@ -1,24 +1,42 @@
-#ifndef DOG_H
-#define DOG_H
-
-#include <stddef.h>  /* for NULL */
+#include <stdlib.h>
+#include <string.h>
+#include "dog.h"
 
 /**
- * struct dog - structure representing a dog
- * @name: name of the dog
- * @age: age of the dog
- * @owner: owner of the dog
+ * new_dog - creates a new dog.
+ * @name: dog's name
+ * @age: dog's age
+ * @owner: dog's owner
+ *
+ * Return: pointer to new dog struct or NULL on failure
  */
-typedef struct dog
+dog_t *new_dog(char *name, float age, char *owner)
 {
-	char *name;
-	float age;
-	char *owner;
-} dog_t;
+    dog_t *dog;
+    char *name_copy, *owner_copy;
 
-/* Function prototypes */
-void init_dog(dog_t *d, char *name, float age, char *owner);
-void print_dog(dog_t *d);
-dog_t *new_dog(char *name, float age, char *owner);
+    dog = malloc(sizeof(dog_t));
+    if (dog == NULL)
+        return (NULL);
 
-#endif /* DOG_H */
+    name_copy = strdup(name);
+    if (name_copy == NULL)
+    {
+        free(dog);
+        return (NULL);
+    }
+
+    owner_copy = strdup(owner);
+    if (owner_copy == NULL)
+    {
+        free(name_copy);
+        free(dog);
+        return (NULL);
+    }
+
+    dog->name = name_copy;
+    dog->age = age;
+    dog->owner = owner_copy;
+
+    return (dog);
+}
