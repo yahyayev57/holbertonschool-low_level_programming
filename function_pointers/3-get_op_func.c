@@ -1,6 +1,14 @@
 #include "3-calc.h"
-#include <stddef.h>  /* NULL */
+#include <stddef.h>  /* For NULL */
 
+/**
+ * get_op_func - Selects the correct function to perform the operation asked by
+ *               the user.
+ * @s: The operator passed as argument.
+ *
+ * Return: Pointer to the function corresponding to the operator given as a
+ *         parameter. Returns NULL if no operator matches.
+ */
 int (*get_op_func(char *s))(int, int)
 {
 	op_t ops[] = {
@@ -19,5 +27,5 @@ int (*get_op_func(char *s))(int, int)
 			return (ops[i].f);
 		i++;
 	}
-	return (NULL);  /* Make sure to return NULL if no match */
+	return (NULL);
 }
