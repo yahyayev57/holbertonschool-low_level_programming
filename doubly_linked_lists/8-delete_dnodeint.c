@@ -2,47 +2,46 @@
 #include <stdlib.h>
 
 /**
- * delete_dnodeint_at_index - Deletes the node at index `index` of
- *                            a doubly linked list.
- * @head: Double pointer to the head of the list
- * @index: Index of the node to delete (starts at 0)
+ * delete_dnodeint_at_index - deletes the node at index of a dlistint_t linked list
+ * @head: pointer to the head of the list
+ * @index: index of the node to delete, starting at 0
  *
- * Return: 1 if succeeded, -1 if failed
+ * Return: 1 if it succeeded, -1 if it failed
  */
 int delete_dnodeint_at_index(dlistint_t **head, unsigned int index)
 {
-    dlistint_t *temp;
-    unsigned int i;
+	dlistint_t *current;
+	unsigned int i;
 
-    if (head == NULL || *head == NULL)
-        return (-1);
+	if (head == NULL || *head == NULL)
+		return (-1);
 
-    temp = *head;
+	current = *head;
 
-    /* If head needs to be removed */
-    if (index == 0)
-    {
-        *head = temp->next;
-        if (*head)
-            (*head)->prev = NULL;
-        free(temp);
-        return (1);
-    }
+	/* if head node needs to be deleted */
+	if (index == 0)
+	{
+		*head = current->next;
+		if (*head != NULL)
+			(*head)->prev = NULL;
+		free(current);
+		return (1);
+	}
 
-    /* Traverse to the node at index */
-    for (i = 0; temp != NULL && i < index; i++)
-        temp = temp->next;
+	/* traverse list to find node at index */
+	for (i = 0; current != NULL && i < index; i++)
+		current = current->next;
 
-    /* If index is out of bounds */
-    if (temp == NULL)
-        return (-1);
+	/* if index is out of bounds */
+	if (current == NULL)
+		return (-1);
 
-    /* Change links of previous and next nodes */
-    if (temp->prev)
-        temp->prev->next = temp->next;
-    if (temp->next)
-        temp->next->prev = temp->prev;
+	/* unlink node from list */
+	if (current->prev != NULL)
+		current->prev->next = current->next;
+	if (current->next != NULL)
+		current->next->prev = current->prev;
 
-    free(temp);
-    return (1);
+	free(current);
+	return (1);
 }
