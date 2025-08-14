@@ -1,4 +1,3 @@
-#include "main.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
@@ -7,7 +6,7 @@
 #define BUFFER_SIZE 1024
 
 /**
- * error_exit - Print error message to stderr and exit with a given code.
+ * error_exit - Prints an error message to stderr and exits with a given code.
  * @code: Exit code.
  * @message: Error message format string.
  * @arg: Optional argument to the format string.
@@ -19,11 +18,11 @@ void error_exit(int code, const char *message, const char *arg)
 }
 
 /**
- * main - Entry point for cp command that copies one file to another.
+ * main - Copies the content of a file to another file.
  * @ac: Argument count.
  * @av: Argument vector.
  *
- * Return: 0 on success, exits on failure.
+ * Return: 0 on success, or exits with a specific code on error.
  */
 int main(int ac, char **av)
 {
@@ -31,7 +30,7 @@ int main(int ac, char **av)
 	char buffer[BUFFER_SIZE];
 
 	if (ac != 3)
-		error_exit(97, "Usage: %s file_from file_to\n", av[0]);
+		error_exit(97, "Usage: cp file_from file_to\n", "");
 
 	fd_from = open(av[1], O_RDONLY);
 	if (fd_from == -1)
@@ -54,6 +53,7 @@ int main(int ac, char **av)
 			error_exit(99, "Error: Can't write to %s\n", av[2]);
 		}
 	}
+
 	if (r == -1)
 	{
 		close(fd_from);
@@ -62,9 +62,10 @@ int main(int ac, char **av)
 	}
 
 	if (close(fd_from) == -1)
-		error_exit(100, "Error: Can't close fd %d\n", av[1]);
+		dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fd_from), exit(100);
+
 	if (close(fd_to) == -1)
-		error_exit(100, "Error: Can't close fd %d\n", av[2]);
+		dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fd_to), exit(100);
 
 	return (0);
 }
