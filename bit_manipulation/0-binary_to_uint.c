@@ -1,3 +1,4 @@
+#include <stddef.h>  // <-- Required for NULL
 #include "main.h"
 
 /**
