@@ -1,4 +1,4 @@
-#include <stddef.h>  // <-- Required for NULL
+#include <stddef.h>  /* Required for NULL */
 #include "main.h"
 
 /**
