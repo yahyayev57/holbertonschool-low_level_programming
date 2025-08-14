@@ -26,7 +26,7 @@ int main(int ac, char **av) {
     fd_to = open(av[2], O_WRONLY | O_CREAT | O_TRUNC, 0664);
     if (fd_to == -1) {
         close(fd_from);
-        error_exit(98, "Error: Can't read from file %s\n", av[1]); // Changed from 99 to 98
+        error_exit(98, "Error: Can't read from file %s\n", av[1]); /* Changed from 99 to 98 */
     }
 
     while (1) {
@@ -43,7 +43,7 @@ int main(int ac, char **av) {
         if (w == -1) {
             close(fd_from);
             close(fd_to);
-            error_exit(98, "Error: Can't read from file %s\n", av[1]); // Changed from 99 to 98
+            error_exit(98, "Error: Can't read from file %s\n", av[1]); /* Changed from 99 to 98 */
         }
     }
 
