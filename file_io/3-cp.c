@@ -33,25 +33,43 @@ void close_fd(int fd)
 }
 
 /**
- * copy_file - Copies the content from one file to another
- * @file_from: Source filename
- * @file_to: Destination filename
+ * open_fd_from - Opens file_from and performs first read
+ * @file_from: Source file name
+ * @fd_from: Pointer to store opened file descriptor
+ * @buffer: Buffer to read into
+ *
+ * Return: Number of bytes read
+ */
+ssize_t open_fd_from(const char *file_from, int *fd_from, char *buffer)
+{
+	ssize_t r_bytes;
+
+	*fd_from = open(file_from, O_RDONLY);
+	if (*fd_from == -1)
+		print_error_exit(98, "Error: Can't read from file %s\n", file_from);
+
+	r_bytes = read(*fd_from, buffer, BUFFER_SIZE);
+	if (r_bytes == -1)
+	{
+		close_fd(*fd_from);
+		print_error_exit(98, "Error: Can't read from file %s\n", file_from);
+	}
+
+	return (r_bytes);
+}
+
+/**
+ * copy_file - Copies content from one file to another
+ * @file_from: Source file
+ * @file_to: Destination file
  */
 void copy_file(const char *file_from, const char *file_to)
 {
-	int fd_from, fd_to, r_bytes, w_bytes;
+	int fd_from, fd_to;
+	ssize_t r_bytes, w_bytes;
 	char buffer[BUFFER_SIZE];
 
-	fd_from = open(file_from, O_RDONLY);
-	if (fd_from == -1)
-		print_error_exit(98, "Error: Can't read from file %s\n", file_from);
-
-	r_bytes = read(fd_from, buffer, BUFFER_SIZE);
-	if (r_bytes == -1)
-	{
-		close_fd(fd_from);
-		print_error_exit(98, "Error: Can't read from file %s\n", file_from);
-	}
+	r_bytes = open_fd_from(file_from, &fd_from, buffer);
 
 	fd_to = open(file_to, O_WRONLY | O_CREAT | O_TRUNC, 0664);
 	if (fd_to == -1)
@@ -69,6 +87,7 @@ void copy_file(const char *file_from, const char *file_to)
 			close_fd(fd_to);
 			print_error_exit(99, "Error: Can't write to %s\n", file_to);
 		}
+
 		r_bytes = read(fd_from, buffer, BUFFER_SIZE);
 		if (r_bytes == -1)
 		{
