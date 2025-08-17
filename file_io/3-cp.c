@@ -18,38 +18,46 @@ void print_error_exit(int code, const char *msg, const char *arg)
 }
 
 /**
- * main - Copies contents from one file to another
- * @argc: Argument count
- * @argv: Argument vector
- *
- * Return: 0 on success, exit otherwise
+ * close_fd - Closes a file descriptor safely
+ * @fd: The file descriptor to close
  */
-int main(int argc, char *argv[])
+void close_fd(int fd)
+{
+	char fd_str[12];
+
+	if (close(fd) == -1)
+	{
+		sprintf(fd_str, "%d", fd);
+		print_error_exit(100, "Error: Can't close fd %s\n", fd_str);
+	}
+}
+
+/**
+ * copy_file - Copies the content from one file to another
+ * @file_from: Source filename
+ * @file_to: Destination filename
+ */
+void copy_file(const char *file_from, const char *file_to)
 {
 	int fd_from, fd_to, r_bytes, w_bytes;
 	char buffer[BUFFER_SIZE];
-	char fd_str[12];
 
-	if (argc != 3)
-		print_error_exit(97, "Usage: cp file_from file_to\n", "");
-
-	fd_from = open(argv[1], O_RDONLY);
+	fd_from = open(file_from, O_RDONLY);
 	if (fd_from == -1)
-		print_error_exit(98, "Error: Can't read from file %s\n", argv[1]);
+		print_error_exit(98, "Error: Can't read from file %s\n", file_from);
 
-	/* First read BEFORE opening file_to */
 	r_bytes = read(fd_from, buffer, BUFFER_SIZE);
 	if (r_bytes == -1)
 	{
-		close(fd_from);
-		print_error_exit(98, "Error: Can't read from file %s\n", argv[1]);
+		close_fd(fd_from);
+		print_error_exit(98, "Error: Can't read from file %s\n", file_from);
 	}
 
-	fd_to = open(argv[2], O_WRONLY | O_CREAT | O_TRUNC, 0664);
+	fd_to = open(file_to, O_WRONLY | O_CREAT | O_TRUNC, 0664);
 	if (fd_to == -1)
 	{
-		close(fd_from);
-		print_error_exit(99, "Error: Can't write to %s\n", argv[2]);
+		close_fd(fd_from);
+		print_error_exit(99, "Error: Can't write to %s\n", file_to);
 	}
 
 	while (r_bytes > 0)
@@ -57,29 +65,35 @@ int main(int argc, char *argv[])
 		w_bytes = write(fd_to, buffer, r_bytes);
 		if (w_bytes != r_bytes)
 		{
-			close(fd_from);
-			close(fd_to);
-			print_error_exit(99, "Error: Can't write to %s\n", argv[2]);
+			close_fd(fd_from);
+			close_fd(fd_to);
+			print_error_exit(99, "Error: Can't write to %s\n", file_to);
 		}
 		r_bytes = read(fd_from, buffer, BUFFER_SIZE);
 		if (r_bytes == -1)
 		{
-			close(fd_from);
-			close(fd_to);
-			print_error_exit(98, "Error: Can't read from file %s\n", argv[1]);
+			close_fd(fd_from);
+			close_fd(fd_to);
+			print_error_exit(98, "Error: Can't read from file %s\n", file_from);
 		}
 	}
 
-	if (close(fd_from) == -1)
-	{
-		sprintf(fd_str, "%d", fd_from);
-		print_error_exit(100, "Error: Can't close fd %s\n", fd_str);
-	}
-	if (close(fd_to) == -1)
-	{
-		sprintf(fd_str, "%d", fd_to);
-		print_error_exit(100, "Error: Can't close fd %s\n", fd_str);
-	}
+	close_fd(fd_from);
+	close_fd(fd_to);
+}
 
+/**
+ * main - Entry point
+ * @argc: Argument count
+ * @argv: Argument vector
+ *
+ * Return: 0 on success
+ */
+int main(int argc, char *argv[])
+{
+	if (argc != 3)
+		print_error_exit(97, "Usage: cp file_from file_to\n", "");
+
+	copy_file(argv[1], argv[2]);
 	return (0);
 }
